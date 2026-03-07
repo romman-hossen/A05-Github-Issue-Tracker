@@ -20,11 +20,35 @@
 
     <!--font awesome  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     <!-- styleSheet -->
      <link rel="stylesheet" href="./style/style.css">
   </head>
   <body>
-    <h3 class="text-xl">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Amet, molestias ullam! Tempora nulla quidem accusamus non nam laborum, est itaque voluptatem velit et aliquid, vitae dolores exercitationem sunt. Atque, ex.</h3>
+   <section class="flex min-h-full py-30 justify-center">
+     <div class="card bg-base-100 w-full max-w-sm p-6  shadow-2xl">
+        <div class="flex justify-center text-center">
+            <div class="space-y-6">
+                <div class="flex justify-center">
+                    <img src="./assets/github-logo.png" alt="">
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-2xl font-bold">GitHub Issues Tracker</h3>
+                    <p class="gray">Sign in to manage your issues</p>
+                </div>
+            </div>
+        </div>
+      <div class="card-body">
+        <fieldset class="fieldset">
+          <label class="label text-black font-semibold">Username</label>
+          <input type="text" class="input gray" placeholder="Enter Username" />
+          <label class="label text-black font-semibold">Password</label>
+          <input type="password" class="input gray w-full" placeholder="Enter Password" />
+          <!-- <div><a class="link link-hover">Forgot password?</a></div> -->
+          <button class="btn btn-primary mt-4">Sign In</button>
+        </fieldset>
+      </div>
+    </div>
+   </section>
   </body>
 </html>
