@@ -3,7 +3,7 @@
     const inputPassword = document.getElementById("input-password");
     const userName = inputUserName.value;
     const password = inputPassword.value;
-    if(userName == "admin" && password ==" admin123"){
+    if(userName == "admin" && password =="admin123"){
         window.location.href = "home.html";
     }
     else{
