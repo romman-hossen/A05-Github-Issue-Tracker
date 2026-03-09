@@ -1,6 +1,16 @@
 let allData =[];
 let total = document.getElementById("total");
 
+// spinner loading
+const mangeSpinner = (status) => {
+   if (status == true) {
+    document.getElementById("spinner").classList.remove("hidden");
+    document.getElementById("issues-container").classList.add("hidden");
+  } else {
+    document.getElementById("issues-container").classList.remove("hidden");
+    document.getElementById("spinner").classList.add("hidden");
+  }
+};
 
 // Togoling btn 
 const button = document.querySelectorAll(".filter-btn");
@@ -18,15 +28,18 @@ button.forEach(btn => {
 
 // load data 
 const loadIssues = async() =>{
+  mangeSpinner(true)
    const url ="https://phi-lab-server.vercel.app/api/v1/lab/issues";
    const res = await fetch(url);
    const json = await res.json();
+   mangeSpinner(false)
    displayIssues(json.data);
    allData = json.data; //store all data on a empty array 
    console.log(allData)
 }
 
 const showModal = async (id) => {
+  mangeSpinner(true)
     const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`;
     const res = await fetch(url);
     const details = await res.json();
@@ -69,6 +82,7 @@ const displayIssuesDetails = (issue) => {
             </div>
     ` 
     document.getElementById('issue_modal').showModal();
+    mangeSpinner(false)
 }
 
 
@@ -82,7 +96,7 @@ const displayIssues = (issues) =>{
  issues.forEach(issue => {
     const card = document.createElement("div");
     card.innerHTML =`
-      <div onclick="showModal(${issue.id})" class="bg-white p-4 rounded-sm shadow space-y-3 h-full border-t-3 ${issue.status === "open"?" border-green-500":"border-purple-500"}">
+      <div class="bg-white p-4 rounded-sm shadow space-y-3 h-full border-t-3 ${issue.status === "open"?" border-green-500":"border-purple-500"}">
       <div class="flex justify-between">
         <div>
         ${issue.priority == "high" ||issue.priority == "medium" ?`<img src="./assets/Open-Status.png" alt="">` :`<img src="./assets/Closed- Status .png" alt="">`}
@@ -111,8 +125,13 @@ const displayIssues = (issues) =>{
       </div>
      </div>
    `
+   card.querySelector("div").addEventListener("click", () => {
+      showModal(issue.id);
+    });
    issusContainer.append(card)
  })
+ mangeSpinner(false)
+ 
 }
 
 // btn switching and counting 
@@ -129,10 +148,10 @@ document.getElementById( "btn-closed").addEventListener('click', () =>{
   displayIssues(closeCard)
 })
 
-loadIssues()
 // search issues
 document.getElementById("search-issue").addEventListener('input', (e)=>{
-    const searchValue = e.target.value.trim().toLowerCase();   
+    const searchValue = e.target.value.trim().toLowerCase(); 
+     mangeSpinner(true);  
     fetch('https://phi-lab-server.vercel.app/api/v1/lab/issues')
     .then(res=> res.json())
     .then(data=> {
@@ -141,7 +160,9 @@ document.getElementById("search-issue").addEventListener('input', (e)=>{
         const filterIssus = allIssues.filter(issues=> issues.title.toLowerCase().includes(searchValue));
         // console.log(filterIssus);
         displayIssues(filterIssus);
+        mangeSpinner(false);
     })
 })
+loadIssues()
 
 
