@@ -1,10 +1,11 @@
 let allData =[];
 let total = document.getElementById("total");
 
+
 // Togoling btn 
 const button = document.querySelectorAll(".filter-btn");
 button.forEach(btn => {
-    console.log(btn)
+    // console.log(btn)
   btn.addEventListener("click", () => {
     button.forEach(b => {
         b.classList.remove("btn-primary","text-white")
@@ -37,11 +38,10 @@ const showModal = async (id) => {
 const displayIssuesDetails = (issue) => {
 
     const detailsContainer = document.getElementById("details-container")
-
     detailsContainer.innerHTML = `
     <h1 class="font-bold text-2xl">${issue.title}</h1>
             <div class="gap-2 flex">
-                <span class="badge bg-success rounded-full text-white">${issue.status}</span>
+                <span class="badge bg-success rounded-full text-white">${issue.status}</span> 
                 <p>•  ${issue.author}  •</p>
                 <p>${new Date(issue.createdAt).toLocaleDateString()}</p>
             </div>
@@ -130,6 +130,18 @@ document.getElementById( "btn-closed").addEventListener('click', () =>{
 })
 
 loadIssues()
-
+// search issues
+document.getElementById("search-issue").addEventListener('input', (e)=>{
+    const searchValue = e.target.value.trim().toLowerCase();   
+    fetch('https://phi-lab-server.vercel.app/api/v1/lab/issues')
+    .then(res=> res.json())
+    .then(data=> {
+        const allIssues = data.data;
+        // console.log(allIssues)
+        const filterIssus = allIssues.filter(issues=> issues.title.toLowerCase().includes(searchValue));
+        // console.log(filterIssus);
+        displayIssues(filterIssus);
+    })
+})
 
 
