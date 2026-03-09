@@ -1,6 +1,5 @@
+let allData =[];
 let total = document.getElementById("total");
-// total.innerText = 55;
-// console.log(total)
 
 // Togoling btn 
 const button = document.querySelectorAll(".filter-btn");
@@ -17,12 +16,63 @@ button.forEach(btn => {
 });
 
 // load data 
-const loadIssues = () =>{
-    const url ="https://phi-lab-server.vercel.app/api/v1/lab/issues";
-    fetch(url)
-    .then (res =>res.json())
-    .then (json => displayIssues(json.data))
+const loadIssues = async() =>{
+   const url ="https://phi-lab-server.vercel.app/api/v1/lab/issues";
+   const res = await fetch(url);
+   const json = await res.json();
+   displayIssues(json.data);
+   allData = json.data; //store all data on a empty array 
+   console.log(allData)
 }
+
+const showModal = async (id) => {
+    const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`;
+    const res = await fetch(url);
+    const details = await res.json();
+    displayIssuesDetails(details.data)
+}
+
+
+// show modal
+const displayIssuesDetails = (issue) => {
+
+    const detailsContainer = document.getElementById("details-container")
+
+    detailsContainer.innerHTML = `
+    <h1 class="font-bold text-2xl">${issue.title}</h1>
+            <div class="gap-2 flex">
+                <span class="badge bg-success rounded-full text-white">${issue.status}</span>
+                <p>•  ${issue.author}  •</p>
+                <p>${new Date(issue.createdAt).toLocaleDateString()}</p>
+            </div>
+            <div class="flex gap-1">
+                <div class="badge badge-soft badge-secondary border-1 border-red-400 p-3 rounded-full font-medium"><i
+                        class="fa-solid fa-bug"></i>${issue.labels[0] ? issue.labels[0] : 'No labels'}</div>
+                <div class="badge badge-soft badge-warning border-1 border-yellow-300 p-3 rounded-full font-medium"><i
+                        class="fa-regular fa-life-ring"></i>${issue.labels[1] ? issue.labels[1] : 'No labels'}</div>
+            </div>
+            <p class="gray py-4">${issue.description}</p>
+            <div class="flex bg-gray-100 p-5 rounded-md">
+                <div class="flex-1">
+                    <p class="gray">Assignee:</p>
+                    <p class="font-semibold text-4">${issue.assignee}</p>
+                </div>
+                <div class="flex-1">
+                    <p class="gray">Priority:</p>
+                    <p class="badge text-white rounded-full ${issue.priority === 'high' ? 'badge-error' : issue.priority === 'medium' ? 'badge-warning' : 'badge-info'}">${issue.priority}</p>
+                </div>
+            </div>
+            <div class="modal-action">
+                <form method="dialog" >
+                    <button class="btn btn-primary">Close</button>
+                   </form>        
+            </div>
+    ` 
+    document.getElementById('issue_modal').showModal();
+}
+
+
+
 const displayIssues = (issues) =>{
  const issusContainer = document.getElementById("issues-container");
  const length = issues.length;
@@ -32,7 +82,7 @@ const displayIssues = (issues) =>{
  issues.forEach(issue => {
     const card = document.createElement("div");
     card.innerHTML =`
-      <div class="bg-white p-4 rounded-sm shadow space-y-3 h-full border-t-3 ${issue.status === "open"?" border-green-500":"border-purple-500"}">
+      <div onclick="showModal(${issue.id})" class="bg-white p-4 rounded-sm shadow space-y-3 h-full border-t-3 ${issue.status === "open"?" border-green-500":"border-purple-500"}">
       <div class="flex justify-between">
         <div>
         ${issue.priority == "high" ||issue.priority == "medium" ?`<img src="./assets/Open-Status.png" alt="">` :`<img src="./assets/Closed- Status .png" alt="">`}
@@ -49,8 +99,8 @@ const displayIssues = (issues) =>{
       </div>
       <div class="flex gap-2">
       ${issue.labels[0] &&  issue.labels[1]?`<span class="bg-pink-100 text-red-400 px-1 rounded-4xl border-1">${issue.labels[0]}</span>
-      <span class="bg-yellow-100 text-orange-300 px-1 rounded-4xl border-1" >${issue.labels[1]}</span>`:
-        issue.labels[0] ? issue.labels[0] == "bug" ?`<span class="bg-pink-100 text-red-400 px-1 rounded-4xl border-1"><i class="fa-solid fa-bug"></i>${issue.labels[0]}</span>` :`<span class="bg-green-100 text-green-300 px-1 rounded-4xl border-1" >${issue.labels[0]}</span>`:false}   
+      <span class="bg-yellow-100 text-orange-300 px-1 rounded-4xl border-1">${issue.labels[1]}</span>`:
+        issue.labels[0] ? issue.labels[0] == "bug" ?`<span class="bg-pink-100 text-red-400 px-1 rounded-4xl border-1"><i class="fa-solid fa-bug"></i> ${issue.labels[0]}</span>` :`<span class="bg-green-100 text-green-300 px-1 rounded-4xl border-1" >${issue.labels[0]}</span>`:false}   
       </div>
        <hr>
       <div class="flex flex-col gap-2 gray">
@@ -64,5 +114,22 @@ const displayIssues = (issues) =>{
    issusContainer.append(card)
  })
 }
+
+// btn switching and counting 
+document.getElementById("btn-all").addEventListener('click', () =>{
+  const allCard = allData;
+  displayIssues(allCard)
+})
+document.getElementById("btn-open").addEventListener('click', () =>{
+  const openCard = allData.filter(open => open.status === 'open');
+  displayIssues(openCard)
+})
+document.getElementById( "btn-closed").addEventListener('click', () =>{
+  const closeCard = allData.filter(close => close.status === 'closed');
+  displayIssues(closeCard)
+})
+
 loadIssues()
+
+
 

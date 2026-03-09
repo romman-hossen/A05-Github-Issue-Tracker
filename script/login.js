@@ -4,6 +4,7 @@
     const userName = inputUserName.value;
     const password = inputPassword.value;
     if(userName == "admin" && password =="admin123"){
+        alert("SignUp Success")
         window.location.href = "home.html";
     }
     else{
